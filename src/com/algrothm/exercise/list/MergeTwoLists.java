@@ -1,3 +1,5 @@
+package com.algrothm.exercise.list;
+
 public class MergeTwoLists {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         if (l1 == null) {

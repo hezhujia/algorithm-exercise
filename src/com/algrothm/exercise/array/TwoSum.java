@@ -1,4 +1,5 @@
-import java.util.Arrays;
+package com.algrothm.exercise.array;
+
 import java.util.HashMap;
 
 public class TwoSum {

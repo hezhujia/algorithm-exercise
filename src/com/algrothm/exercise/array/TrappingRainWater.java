@@ -1,3 +1,5 @@
+package com.algrothm.exercise.array;
+
 public class TrappingRainWater {
 
     public int trap(int[] height) {

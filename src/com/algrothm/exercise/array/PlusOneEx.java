@@ -1,4 +1,6 @@
-public class PlusOne {
+package com.algrothm.exercise.array;
+
+public class PlusOneEx {
 
     public int[] plusOne(int[] digits) {
         int plusOneIndex = digits.length - 1;

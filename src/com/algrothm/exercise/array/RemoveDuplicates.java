@@ -1,3 +1,5 @@
+package com.algrothm.exercise.array;
+
 public class RemoveDuplicates {
 
     public int removeDuplicates(int[] nums) {

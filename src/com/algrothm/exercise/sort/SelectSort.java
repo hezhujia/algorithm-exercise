@@ -1,4 +1,4 @@
-package sort;
+package com.algrothm.exercise.sort;
 
 import java.util.Arrays;
 
