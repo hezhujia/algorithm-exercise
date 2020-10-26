@@ -1,6 +1,6 @@
 package com.algrothm.exercise.utils;
 
-public class PauseArgs {
+public class ParseArgs {
 
     public static int[][] changeStringToTwoDimensionIntArray(String str) {
         String[] rows = str.split("],");

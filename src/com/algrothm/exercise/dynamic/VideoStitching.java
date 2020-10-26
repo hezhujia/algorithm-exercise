@@ -5,8 +5,8 @@ import com.algrothm.exercise.utils.TestCase;
 
 import java.util.List;
 
-import static com.algrothm.exercise.utils.PauseArgs.changeStringToTwoDimensionIntArray;
-import static com.algrothm.exercise.utils.PauseArgs.changeTwoDimensionIntArrayToString;
+import static com.algrothm.exercise.utils.ParseArgs.changeStringToTwoDimensionIntArray;
+import static com.algrothm.exercise.utils.ParseArgs.changeTwoDimensionIntArrayToString;
 
 public class VideoStitching {
 
