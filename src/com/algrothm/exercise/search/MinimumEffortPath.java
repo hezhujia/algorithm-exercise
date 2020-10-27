@@ -3,7 +3,6 @@ package com.algrothm.exercise.search;
 import com.algrothm.exercise.utils.ExecTestCases;
 import com.algrothm.exercise.utils.ParseArgs;
 import com.algrothm.exercise.utils.TestCase;
-import javafx.util.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
