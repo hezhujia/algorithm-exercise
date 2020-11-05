@@ -3,6 +3,9 @@ package com.algrothm.exercise.utils;
 public class ParseArgs {
 
     public static int[][] changeStringToTwoDimensionIntArray(String str) {
+        if (str.equals("[[]]")) {
+            return new int[][]{};
+        }
         String[] rows = str.split("],");
         int[][] results = new int[rows.length][];
 

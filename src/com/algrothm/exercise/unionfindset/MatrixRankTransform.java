@@ -1,11 +1,11 @@
 package com.algrothm.exercise.unionfindset;
 
+import com.algrothm.exercise.search.Pair;
 import com.algrothm.exercise.utils.ExecTestCases;
 import com.algrothm.exercise.utils.ParseArgs;
 import com.algrothm.exercise.utils.TestCase;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MatrixRankTransform {
 
@@ -13,42 +13,130 @@ public class MatrixRankTransform {
         int row = matrix.length;
         int col = matrix[0].length;
 
-        int[][] parent = new int[row][col];
-        int[][] rank = new int[row][col];
+        int[] parent = new int[row * col];
+        int[] size = new int[row * col];
+        for (int i = 0; i < row * col; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
 
         for (int i = 0; i < row; i++) {
+            Map<Integer, List<Integer>> mp = new HashMap<>();
             for (int j = 0; j < col; j++) {
-                parent[i][j] = i * row + j;
-                rank[i][j] = 1;
+                if (mp.containsKey(matrix[i][j])) {
+                    mp.get(matrix[i][j]).add(i * col + j);
+                } else {
+                    mp.put(matrix[i][j], new ArrayList<>(i * col + j));
+                }
+            }
+            mp.forEach((key, value) -> {
+                for (int j = 0; j < value.size() - 1; j++) {
+                    connect(value.get(j), value.get(j+1), parent, size);
+                }
+            });
+        }
+
+        for (int j = 0; j < col; j++) {
+            Map<Integer, List<Integer>> mp = new HashMap<>();
+            for (int i = 0; i < col; i++) {
+                if (mp.containsKey(matrix[i][j])) {
+                    mp.get(matrix[i][j]).add(i * col + j);
+                } else {
+                    mp.put(matrix[i][j], new ArrayList<>(i * col + j));
+                }
+            }
+            mp.forEach((key, value) -> {
+                for (int i = 0; i < value.size() - 1; i++) {
+                    connect(value.get(i), value.get(i+1), parent, size);
+                }
+            });
+        }
+
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int[] indegree = new int[row * col];
+        for (int i = 0; i < row; i++) {
+            List<Pair<Integer, Integer>> sortedCol = new ArrayList<>();
+            for (int j = 0; j < col; j++) {
+                sortedCol.add(new Pair<>(matrix[i][j], j));
+            }
+            sortedCol.sort(Comparator.comparingInt(Pair::getKey));
+            for (int j = 0; j < col - 1; j++) {
+                if (!sortedCol.get(j).getKey().equals(sortedCol.get(j + 1).getKey())) {
+                    int uu = findParent(i * col + sortedCol.get(j).getValue(), parent);
+                    int vv = findParent(i * col + sortedCol.get(j+1).getValue(), parent);
+                    if (!adj.containsKey(uu)) {
+                        adj.put(uu, new ArrayList<>());
+                    }
+                    adj.get(uu).add(vv);
+                    indegree[vv]++;
+                }
+            }
+        }
+        for (int j = 0; j < col; j++) {
+            List<Pair<Integer, Integer>> sortedCol = new ArrayList<>();
+            for (int i = 0; i < row; i++) {
+                sortedCol.add(new Pair<>(matrix[i][j], i));
+            }
+            sortedCol.sort(Comparator.comparingInt(Pair::getKey));
+            for (int i = 0; i < row - 1; i++) {
+                if (!sortedCol.get(i).getKey().equals(sortedCol.get(i + 1).getKey())) {
+                    int uu = findParent(sortedCol.get(i).getValue() * col + j, parent);
+                    int vv = findParent(sortedCol.get(i+1).getValue() * col + j, parent);
+                    if (!adj.containsKey(uu)) {
+                        adj.put(uu, new ArrayList<>());
+                    }
+                    adj.get(uu).add(vv);
+                    indegree[vv]++;
+                }
+            }
+        }
+        int[] ans = new int[row * col];
+        Arrays.fill(ans, 1);
+        Queue<Integer> q = new LinkedList<>();
+
+        for (int i = 0; i < row * col; i++) {
+            if (findParent(i, parent) == i && indegree[i] == 0) {
+                q.add(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v : adj.get(u)) {
+                ans[v] = Math.max(ans[v], ans[u] + 1);
+                indegree[v]--;
+                if (indegree[v] == 0) {
+                    q.add(v);
+                }
             }
         }
 
-        return rank;
-    }
-
-    private static int findParent(int i, int j, int[][] parent) {
-        while (parent[i][j] != i * parent.length + j) {
-            int curParent = parent[i][j];
-            i = curParent / parent.length;
-            j = curParent % parent.length;
+        int[][] result = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                result[i][j] = ans[findParent(i * col + j, parent)];
+            }
         }
-        return parent[i][j];
+
+        return result;
     }
 
-    private static void merge(int i1, int j1, int i2, int j2, int[][] parent, int[][] rank, int[][] matrix) {
-        int root1 = findParent(i1, j1, parent);
-        int root2 = findParent(i2, j2, parent);
-        if (root1 != root2) {
-            i1 = root1 / parent.length;
-            j1 = root1 % parent.length;
-            i2 = root2 / parent.length;
-            j2 = root2 % parent.length;
+    private static int findParent(int idx, int[] parent) {
+        if (parent[idx] == idx) {
+            return idx;
+        }
+        return findParent(parent[idx], parent);
+    }
 
-            if (matrix[i1][j1] < matrix[i2][j2]) {
-                rank[i1][j1]++;
-                parent[i1][j1] = root2;
-            } else if (matrix[i1][j1] > matrix[i2][j2]) {
-                parent[i2][j2] = root1;
+    private static void connect(int a, int b, int[]parent, int[] size) {
+        int parentA = findParent(a, parent);
+        int parentB = findParent(b, parent);
+        if (parentA != parentB) {
+            if (size[parentA] > size[parentB]) {
+                parent[parentB] = parentA;
+                size[parentA] += size[parentB];
+            } else {
+                parent[parentA] = parentB;
+                size[parentB] += size[parentA];
             }
         }
     }
