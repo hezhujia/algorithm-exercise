@@ -1,5 +1,11 @@
 package com.algrothm.exercise.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ParseArgs {
 
     public static int[][] changeStringToTwoDimensionIntArray(String str) {
@@ -35,5 +41,20 @@ public class ParseArgs {
         stringBuilder.deleteCharAt(stringBuilder.length()-1).append("]");
 
         return stringBuilder.toString();
+    }
+
+    public static List<List<Integer>> changeStringToTwoDimensionIntList(String str) {
+
+        int[][] array = changeStringToTwoDimensionIntArray(str);
+        List<List<Integer>> result = new ArrayList<>();
+        for (int[] row : array) {
+            List<Integer> newRow = new ArrayList<>();
+            for (int item : row) {
+                newRow.add(item);
+            }
+            result.add(newRow);
+        }
+
+        return result;
     }
 }
