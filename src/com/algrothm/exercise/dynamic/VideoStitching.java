@@ -38,6 +38,32 @@ public class VideoStitching {
         return result;
     }
 
+    static class TempTestCase implements TestCase<Integer> {
+        final int[][] testClips;
+        final int testT;
+        final int expectedResult;
+
+        TempTestCase(String testClipsStr, int testT, int expectedResult) {
+            this.testClips = changeStringToTwoDimensionIntArray(testClipsStr);
+            this.testT = testT;
+            this.expectedResult = expectedResult;
+        }
+
+        @Override
+        public Integer getExceptedResult() {
+            return expectedResult;
+        }
+
+        @Override
+        public String toString() {
+            return "TempTestCase{" +
+                    "testClips=" + changeTwoDimensionIntArrayToString(testClips) +
+                    ", testT=" + testT +
+                    ", expectedResult=" + expectedResult +
+                    '}';
+        }
+    }
+
     public static void main(String[] args) {
 
         List<TempTestCase> testCases = new ExecTestCases.TestCaseArrayBuilder<TempTestCase>()
@@ -50,28 +76,3 @@ public class VideoStitching {
 
 }
 
-class TempTestCase implements TestCase<Integer> {
-    final int[][] testClips;
-    final int testT;
-    final int expectedResult;
-
-    TempTestCase(String testClipsStr, int testT, int expectedResult) {
-        this.testClips = changeStringToTwoDimensionIntArray(testClipsStr);
-        this.testT = testT;
-        this.expectedResult = expectedResult;
-    }
-
-    @Override
-    public Integer getExceptedResult() {
-        return expectedResult;
-    }
-
-    @Override
-    public String toString() {
-        return "TempTestCase{" +
-                "testClips=" + changeTwoDimensionIntArrayToString(testClips) +
-                ", testT=" + testT +
-                ", expectedResult=" + expectedResult +
-                '}';
-    }
-}

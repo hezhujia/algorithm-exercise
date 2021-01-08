@@ -1,10 +1,7 @@
 package com.algrothm.exercise.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ParseArgs {
 
@@ -56,5 +53,47 @@ public class ParseArgs {
         }
 
         return result;
+    }
+
+    public static char[][] changeStringToTwoDimensionCharArray(String str) {
+        if (str.equals("[]") || str.equals("[[]]")) {
+            return new char[][]{};
+        }
+        String[] rows = str.split("],");
+        char[][] results = new char[rows.length][];
+
+        for (int i = 0; i < rows.length; i++) {
+            String[] item = rows[i].replaceAll("\\[", "")
+                    .replaceAll("]", "")
+                    .replaceAll("\"", "")
+                    .split(",");
+            if (item.length == 1 && item[0].equals("")) {
+                results[i] = new char[0];
+                continue;
+            }
+            results[i] = new char[item.length];
+            for (int j = 0; j < item.length; j++) {
+                results[i][j] = item[j].charAt(0);
+            }
+        }
+
+        return results;
+    }
+
+    public static String changeTwoDimensionCharArrayToString(char[][] array) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        for (char[] row : array) {
+            stringBuilder.append("[");
+            for (char item : row) {
+                stringBuilder.append(item).append(",");
+            }
+            stringBuilder.deleteCharAt(stringBuilder.length()-1)
+                    .append("]")
+                    .append(",");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1).append("]");
+
+        return stringBuilder.toString();
     }
 }
