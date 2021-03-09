@@ -14,9 +14,9 @@ public class ExecTestCases {
     public static <T extends TestCase<R>, R> void exec(List<T> testCases, Function<T, R> function) {
         boolean isPass = true;
         for (T testcase :testCases) {
-            R exceptedResult = testcase.getExceptedResult();
             R actualResult = function.apply(testcase);
-            if (actualResult != exceptedResult) {
+            R exceptedResult = testcase.getExceptedResult();
+            if (!actualResult.equals(exceptedResult)) {
                 isPass = false;
                 System.out.println("test failed!");
                 System.out.printf("for testCase:[%s] exceptedResult:[%s] actualResult:[%s]\n", testcase, testcase.resultToString(exceptedResult), testcase.resultToString(actualResult));
@@ -30,8 +30,8 @@ public class ExecTestCases {
     public static <T extends TestCase<R>, R> void exec(List<T> testCases, Function<T, R> function, Comparator<R> comparator) {
         boolean isPass = true;
         for (T testcase :testCases) {
-            R exceptedResult = testcase.getExceptedResult();
             R actualResult = function.apply(testcase);
+            R exceptedResult = testcase.getExceptedResult();
             if (comparator.compare(actualResult, exceptedResult) != 0) {
                 isPass = false;
                 System.out.println("test failed!");
@@ -53,6 +53,22 @@ public class ExecTestCases {
 
         public List<T> build() {
             return testCases;
+        }
+    }
+
+    public static class ListComparator implements Comparator<List> {
+
+        @Override
+        public int compare(List result1, List result2) {
+            if (result1.size() != result2.size()) {
+                return -1;
+            }
+            for (int i = 0; i < result1.size(); i++) {
+                if (!result1.get(i).equals(result2.get(i))) {
+                    return 1;
+                }
+            }
+            return 0;
         }
     }
 }
