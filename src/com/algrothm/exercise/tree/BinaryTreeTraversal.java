@@ -1,11 +1,9 @@
 package com.algrothm.exercise.tree;
 
-import com.algrothm.exercise.search.Pair;
 import com.algrothm.exercise.utils.ExecTestCases;
 import com.algrothm.exercise.utils.TestCase;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BinaryTreeTraversal {
     // 算法1：递归访问左子树、右子树
@@ -262,34 +260,34 @@ public class BinaryTreeTraversal {
         levelOrder(root.right, level+1, result);
     }
 
-    // 层次遍历-非递归
-    public static List<List<Integer>> levelOrderNorRecusive(TreeNode root) {
+    // 层次遍历-非递归-每层从左到右从右到左进行遍历
+    public static List<List<Integer>> levelOrderNotRecusive(TreeNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        Queue<TreeNode> curLevel = new LinkedList<>();
-        Queue<TreeNode> nextLevel = new LinkedList<>();
+        LinkedList<TreeNode> curLevel = new LinkedList<>();
         if (root == null) {
             return result;
         }
 
         curLevel.add(root);
+        boolean isLeft = true; // 当前层是从左到右，下一层是从右到左
 
         while (!curLevel.isEmpty()) {
-            List<Integer> curLevelResult = new ArrayList<>();
+            LinkedList<Integer> curLevelResult = new LinkedList<>();
+            int curLevelSize = curLevel.size();
 
-            while (!curLevel.isEmpty()) {
-                TreeNode curNode = curLevel.poll();
-                curLevelResult.add(curNode.val);
-                if (curNode.left != null) {
-                    nextLevel.add(curNode.left);
+            for (int i = 0; i < curLevelSize && !curLevel.isEmpty(); i++) {
+                TreeNode curNode = curLevel.pollFirst();
+                if (isLeft) {
+                    curLevelResult.addLast(curNode.val);
+                } else {
+                    curLevelResult.addFirst(curNode.val);
                 }
-                if (curNode.right != null) {
-                    nextLevel.add(curNode.right);
-                }
+                if (curNode.left != null) curLevel.addLast(curNode.left);
+                if (curNode.right != null) curLevel.addLast(curNode.right);
             }
 
             result.add(curLevelResult);
-            curLevel = nextLevel;
-            nextLevel = new LinkedList<>();
+            isLeft = !isLeft;
         }
 
         return result;
@@ -338,7 +336,7 @@ public class BinaryTreeTraversal {
         // 前序遍历测试
         ExecTestCases.exec(testCases, binaryTestCase -> {
             binaryTestCase.traversalType = "levelorder";
-            return levelOrderNorRecusive(binaryTestCase.testRoot);
+            return levelOrderNotRecusive(binaryTestCase.testRoot);
         }, new ExecTestCases.ListComparator());
     }
 }

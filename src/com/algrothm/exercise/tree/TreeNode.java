@@ -1,5 +1,9 @@
 package com.algrothm.exercise.tree;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class TreeNode {
     int val;
     TreeNode left;
@@ -39,5 +43,45 @@ public class TreeNode {
         curNode.right = buildBinaryTree((i-nullCounts[i])*2+2, nullCounts, nodeVals);
 
         return curNode;
+    }
+
+    public static String binaryTreeToString(TreeNode root) {
+        if (root == null) {
+            return "";
+        }
+
+        List<String> result = new ArrayList<>();
+        LinkedList<TreeNode> searchList = new LinkedList<>();
+        searchList.add(root);
+
+        while (!searchList.isEmpty()) {
+            int size = searchList.size();
+
+            for (int i = 0; i < size; i++) {
+                TreeNode cur = searchList.pollFirst();
+                if (cur == null) {
+                    result.add("null");
+                } else {
+                    result.add(String.valueOf(cur.val));
+                    searchList.add(cur.left);
+                    searchList.add(cur.right);
+                }
+            }
+        }
+
+        // 去掉后面的null
+        int size = result.size();
+        for (int i = size-1; i >= 0; i--) {
+            if (result.get(i).equals("null")) {
+                result.remove(i);
+            } else {
+                break;
+            }
+        }
+        return String.join(",", result);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(binaryTreeToString(buildBinaryTree("3,1,4,null,null,2")));
     }
 }
