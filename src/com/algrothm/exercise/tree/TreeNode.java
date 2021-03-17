@@ -38,7 +38,7 @@ public class TreeNode {
             return null;
         }
 
-        TreeNode curNode = new TreeNode(Integer.parseInt(nodeVals[i]));
+        TreeNode curNode = new TreeNode(Integer.parseInt(nodeVals[i].trim()));
         curNode.left = buildBinaryTree((i-nullCounts[i])*2+1, nullCounts, nodeVals);
         curNode.right = buildBinaryTree((i-nullCounts[i])*2+2, nullCounts, nodeVals);
 
